@@ -45,6 +45,7 @@ fi
 git config user.name "${GITHUB_ACTOR}"
 git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 git config --local user.password ${GITHUB_TOKEN}
+git config --global merge.ours.driver true
 
 git remote add upstream "$UPSTREAM_REPO"
 git fetch ${FETCH_ARGS} upstream
