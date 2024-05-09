@@ -70,6 +70,7 @@ for exclusion in "${exclusions[@]}"
 do
    echo "$exclusion"
    echo "$exclusion merge=ours" >> .gitattributes
+   cat .gitattributes
 done
 
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH})
