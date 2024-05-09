@@ -11,6 +11,7 @@ MERGE_ARGS=$6
 PUSH_ARGS=$7
 SPAWN_LOGS=$8
 DOWNSTREAM_REPO=$9
+IGNORE_FILES=$10
 
 if [[ -z "$UPSTREAM_REPO" ]]; then
   echo "Missing \$UPSTREAM_REPO"
@@ -64,8 +65,16 @@ esac
 
 git push origin
 
+IFS=', ' read -r -a exclusions <<< "$IGNORE_FILES"
+for exclusion in "${exclusions[@]}"
+do
+   echo "$exclusion"
+   echo "$exclusion merge=ours" >> .gitattributes
+done
+
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH})
 
+rm -rf .gitattributes
 
 if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]]
 then
