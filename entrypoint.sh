@@ -53,6 +53,7 @@ git fetch ${FETCH_ARGS} upstream
 git remote -v
 
 git checkout origin/${DOWNSTREAM_BRANCH}
+git checkout -b ${DOWNSTREAM_BRANCH}
 
 case ${SPAWN_LOGS} in
   (true)    echo -n "sync-upstream-repo https://github.com/dabreadman/sync-upstream-repo keeping CI alive."\
