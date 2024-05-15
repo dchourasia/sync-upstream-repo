@@ -52,8 +52,7 @@ git remote add upstream "$UPSTREAM_REPO"
 git fetch ${FETCH_ARGS} upstream
 git remote -v
 
-git checkout origin/${DOWNSTREAM_BRANCH}
-git checkout -b ${DOWNSTREAM_BRANCH}
+git checkout ${DOWNSTREAM_BRANCH}
 
 case ${SPAWN_LOGS} in
   (true)    echo -n "sync-upstream-repo https://github.com/dabreadman/sync-upstream-repo keeping CI alive."\
@@ -64,7 +63,7 @@ case ${SPAWN_LOGS} in
   (false)   echo "Not spawning time logs"
 esac
 
-git push origin ${DOWNSTREAM_BRANCH}
+git push origin
 
 IFS=', ' read -r -a exclusions <<< "$IGNORE_FILES"
 for exclusion in "${exclusions[@]}"
