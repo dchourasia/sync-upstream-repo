@@ -80,7 +80,7 @@ git status
 
 rm -rf .gitattributes
 
-if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]]
+if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]] || [[ $MERGE_RESULT == *"CONFLICT ("* ]]
 then
   exit 1
 elif [[ $MERGE_RESULT != *"Already up to date."* ]]
