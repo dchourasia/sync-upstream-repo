@@ -75,6 +75,9 @@ done
 
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH})
 
+echo "checking git status"
+git status
+
 rm -rf .gitattributes
 
 if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]]
