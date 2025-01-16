@@ -12,6 +12,8 @@ PUSH_ARGS=$7
 SPAWN_LOGS=$8
 DOWNSTREAM_REPO=$9
 IGNORE_FILES=${10}
+PUSH_TAGS=${11}
+
 
 if [[ -z "$UPSTREAM_REPO" ]]; then
   echo "Missing \$UPSTREAM_REPO"
@@ -87,6 +89,9 @@ elif [[ $MERGE_RESULT != *"Already up to date."* ]]
 then
   git commit -m "Merged upstream"
   git push ${PUSH_ARGS} origin ${DOWNSTREAM_BRANCH} || exit $?
+  if [[ -n ${PUSH_TAGS} ]]; then
+      git push origin ${PUSH_ARGS} ${PUSH_TAGS:-"refs/tags/*"}
+  fi
 fi
 
 cd ..
