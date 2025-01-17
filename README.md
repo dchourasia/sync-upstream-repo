@@ -37,6 +37,8 @@ env:
   # Optional toggle to spawn time logs (keeps action active) 
   SPAWN_LOGS: "false" # "true" or "false"
   IGNORE_FILES: "dummy.ext"
+  # Optional tags refspec to push (leave empty to skip)
+  PUSH_TAGS: "refs/tags/v*"
 
 # This runs every day on 1801 UTC
 on:
@@ -62,6 +64,7 @@ jobs:
           push_args: ${{ env.PUSH_ARGS }}
           spawn_logs: ${{ env.SPAWN_LOGS }}
           ignore_files: ${{ env.IGNORE_FILES }}
+          push_tags: ${{ env.PUSH_TAGS }}
 ```
 
 This action syncs your repo (merge changes from `remote`) at branch `main` with the upstream repo ``` https://github.com/dabreadman/go-web-proxy.git ``` every day on 1801 UTC.  
