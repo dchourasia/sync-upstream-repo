@@ -67,6 +67,11 @@ esac
 
 git push origin
 
+if [[ -e .gitattributes ]]
+then
+  cp .gitattributes .gitattributes_org
+fi
+
 IFS=', ' read -r -a exclusions <<< "$IGNORE_FILES"
 for exclusion in "${exclusions[@]}"
 do
@@ -81,6 +86,11 @@ echo "checking git status"
 git status
 
 rm -rf .gitattributes
+
+if [[ -e .gitattributes_org ]]
+then
+  mv .gitattributes_org .gitattributes
+fi
 
 if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]] || [[ $MERGE_RESULT == *"CONFLICT ("* ]]
 then
