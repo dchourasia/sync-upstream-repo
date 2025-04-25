@@ -67,32 +67,22 @@ esac
 
 git push origin
 
-if [[ -e .gitattributes ]]
-then
-  cp .gitattributes .gitattributes_org
-fi
 
 IFS=', ' read -r -a exclusions <<< "$IGNORE_FILES"
 for exclusion in "${exclusions[@]}"
 do
    echo "$exclusion"
-   echo "$exclusion merge=ours" >> .gitattributes
-   cat .gitattributes
+   echo "$exclusion merge=ours" >> .git/info/attributes
+   cat .git/info/attributes
 done
 
-MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH})
+MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
 
 echo "checking git status"
 git status
 
-rm -rf .gitattributes
 
-if [[ -e .gitattributes_org ]]
-then
-  mv .gitattributes_org .gitattributes
-fi
-
-if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]] || [[ $MERGE_RESULT == *"CONFLICT ("* ]]
+if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]] || [[ $MERGE_RESULT == *"CONFLICT ("* ]] || [[ $MERGE_RESULT == *"error:"* ]] || [[ $MERGE_RESULT == *"Aborting"* ]]
 then
   exit 1
 elif [[ $MERGE_RESULT != *"Already up to date."* ]]
