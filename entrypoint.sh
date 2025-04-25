@@ -77,6 +77,7 @@ do
 done
 
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
+echo $MERGE_RESULT
 
 echo "checking git status"
 git status
