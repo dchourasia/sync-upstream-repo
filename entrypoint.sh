@@ -71,9 +71,16 @@ git push origin
 IFS=', ' read -r -a exclusions <<< "$IGNORE_FILES"
 for exclusion in "${exclusions[@]}"
 do
-   echo "$exclusion"
-   echo "$exclusion merge=ours" >> .git/info/attributes
-   cat .git/info/attributes
+  echo "$exclusion"
+  if [[ "$exclusion" == */\* ]]; then
+    folder="${exclusion%%\*}"
+    find "$folder" -type f | while read -r file; do
+      echo "$file merge=ours" >> .git/info/attributes
+    done
+  else
+    echo "$exclusion merge=ours" >> .git/info/attributes
+  fi
+    cat .git/info/attributes
 done
 
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
