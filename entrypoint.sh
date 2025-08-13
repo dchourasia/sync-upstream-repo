@@ -83,12 +83,39 @@ do
     cat .git/info/attributes
 done
 
-MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
-echo $MERGE_RESULT
+REPO_NAME=$(basename -s .git "$UPSTREAM_REPO")
 
-echo "checking git status"
-git status
+if [[ "$REPO_NAME" == "notebooks" ]]; then
+  echo "Creating temporary branch 'upstream-temp-merge' for staged changes..."
+  git checkout -b upstream-temp-merge "upstream/$UPSTREAM_BRANCH"
 
+  # Remove the .tekton/* folder from the staged changes in the temporary branch.
+  # This ensures that no changes to this folder will be merged downstream.
+  echo "Removing the .tekton folder from the temporary merge branch..."
+
+  # The 'git rm -r --cached' command unstages the folder, and 'git commit' removes it from the temporary branch's history.
+  if [ -d ".tekton" ]; then
+      git rm -r --cached .tekton/*
+      git commit --allow-empty -m "Remove .tekton folder for merge."
+  fi
+
+  # Switch back to the downstream branch.
+  echo "Switching back to the '$DOWNSTREAM_BRANCH' branch..."
+  git checkout "$DOWNSTREAM_BRANCH"
+
+  # Perform a squash merge from the temporary branch.
+  # The --squash flag takes all the changes from the temporary branch and places them in a single commit,
+  # without bringing in its history. This also avoids merge conflicts related to .tekton because it's no longer there.
+  echo "Performing a squash merge from 'upstream-temp-merge'..."
+  MERGE_RESULT=$(git merge --squash upstream-temp-merge 2>&1)
+
+else
+  MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
+  echo $MERGE_RESULT
+
+  echo "checking git status"
+  git status
+fi
 
 if [[ $MERGE_RESULT == "" ]] || [[ $MERGE_RESULT == *"merge failed"* ]] || [[ $MERGE_RESULT == *"CONFLICT ("* ]] || [[ $MERGE_RESULT == *"error:"* ]] || [[ $MERGE_RESULT == *"Aborting"* ]]
 then
