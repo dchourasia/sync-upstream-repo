@@ -83,6 +83,12 @@ do
     cat .git/info/attributes
 done
 
+UPSTREAM_SHA=$(git rev-parse upstream/${UPSTREAM_BRANCH})
+DOWNSTREAM_SHA=$(git rev-parse HEAD)
+
+echo "Upstream commit:   $UPSTREAM_SHA"
+echo "Downstream commit: $DOWNSTREAM_SHA"
+
 MERGE_RESULT=$(git merge ${MERGE_ARGS} upstream/${UPSTREAM_BRANCH} 2>&1)
 echo $MERGE_RESULT
 
