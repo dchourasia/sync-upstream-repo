@@ -45,22 +45,24 @@ inputs:
     description: Comma separated list of globbing paths which needs to be ignored while merge
     required: false
     default: ""
-
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  args:
-    - ${{ inputs.upstream_repo }}
-    - ${{ inputs.upstream_branch }}
-    - ${{ inputs.downstream_branch }}
-    - ${{ inputs.token }}
-    - ${{ inputs.fetch_args }}
-    - ${{ inputs.merge_args }}
-    - ${{ inputs.push_args }}
-    - ${{ inputs.spawn_logs }}
-    - ${{ inputs.downstream_repo }}
-    - ${{ inputs.ignore_files }}
-    - ${{ inputs.push_tags }}
+  using: composite
+  steps:
+    - name: Sync upstream
+      shell: bash
+      run: |
+        bash "${{ github.action_path }}/entrypoint.sh" \
+          "${{ inputs.upstream_repo }}" \
+          "${{ inputs.upstream_branch }}" \
+          "${{ inputs.downstream_branch }}" \
+          "${{ inputs.token }}" \
+          "${{ inputs.fetch_args }}" \
+          "${{ inputs.merge_args }}" \
+          "${{ inputs.push_args }}" \
+          "${{ inputs.spawn_logs }}" \
+          "${{ inputs.downstream_repo }}" \
+          "${{ inputs.ignore_files }}" \
+          "${{ inputs.push_tags }}"
 
 branding:
   icon: "git-merge"
